@@ -18,6 +18,7 @@ class Graph{
         void addEdge(int i, int j);
         void removeEdge(int i, int j);
         bool hasEdge(int i, int j);
+        int size() const;
         Set<int> inConnections(int i) const;
         Set<int> outConnections(int i) const;
         Set<int> allConnections(int i) const;
@@ -36,7 +37,10 @@ Graph::Graph(int vertNum){
 
 Graph::Graph(const Graph& other){
     capacity = other.capacity;
-    arr = other.arr;
+    arr = new LinkedList<int>[capacity];
+    for(int i = 0; i < capacity; i++){
+        arr[i] = other.arr[i];
+    }
 }
 
 Graph::~Graph(){
@@ -58,6 +62,15 @@ bool Graph::hasEdge(int i, int j){
         return false;
     else
         return true;
+}
+
+int Graph::size() const {
+    int counter;
+    for(int i = 0 ; i < capacity; ++i){
+        if(!arr[i].empty())
+            counter++;
+    }
+    return counter;
 }
 
 Set<int> Graph::inConnections(int i) const { //wszystkie wierzchołki od których wychodzą krawędzie do i
@@ -90,7 +103,7 @@ Set<int> Graph::allConnections(int i) const { //suma dwóch poprzednich;
     for(LinkedList<int>::Iterator it = arr[i].begin(); it != arr[i].end(); it++){
         outSet.insert(it->value);
     }
-    return outSet;
+    
 
     outSet.setUnion(inSet);
     return outSet;
@@ -98,35 +111,39 @@ Set<int> Graph::allConnections(int i) const { //suma dwóch poprzednich;
 }
 
 int* Graph::BFS(const Graph& g, int s){
-    int* dist = new int[g.capacity];
-    bool* visited = new bool[g.capacity];
-    for(int i = 0; i < g.capacity; i++){
+    int gSize = g.size();
+    std::queue<int> q;
+    bool* visited = new bool[gSize];
+    int* paths = new int[gSize];
+
+    
+    for(int i = 0; i < gSize; i++){
         visited[i] = false;
-        dist[i] = -1;
+        paths[i] = -1;
     }
 
-    std::queue<int> q;
     visited[s] = true;
-    dist[s] = 0;
+    paths[s] = 0;
     q.push(s);
 
     while(!q.empty()){
-        int u = q.front();
+        int frontEl = q.front();
         q.pop();
+        Set<int> adj = g.outConnections(frontEl);
 
-        Set<int> adj = g.allConnections(u);
         for(int i = 0; i < adj.size(); i++){
             int v = adj.getElement(i);
             if(!visited[v]){
                 visited[v] = true;
-                dist[v] = dist[u] + 1;
+                paths[v] = paths[frontEl] + 1;
                 q.push(v);
+            }
         }
-        }
-        
     }
+
     delete[] visited;
-    return dist;
+    return paths;
+
 }
 
 #endif
