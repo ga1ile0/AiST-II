@@ -25,4 +25,6 @@ auto main() -> int{
     myGraph.removeEdge(0, 5);
     if(myGraph.hasEdge(0,5))
         std::cout << "Yeah2" << std::endl;
+
+
 }

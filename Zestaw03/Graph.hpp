@@ -11,6 +11,8 @@ class Graph{
     private:
         LinkedList<int> * arr;
         int capacity;
+        int _size;
+        void resize(int newCapacity);
     public:
         Graph();
         Graph(int vertNum);
@@ -25,6 +27,18 @@ class Graph{
         Set<int> allConnections(int i) const;
         int* BFS(const Graph& g, int s);
 };
+
+void Graph::resize(int newCapacity){
+    capacity = newCapacity;
+    LinkedList<int> * newArr;
+    newArr = new LinkedList<int>[newCapacity];
+    for(int i = 0; i < _size; i++){
+        newArr[i] = arr[i];
+    }
+    delete[] arr;
+    arr = newArr;
+
+}
 
 Graph::Graph(){
     capacity = DEF_CAP;
@@ -49,6 +63,13 @@ Graph::~Graph(){
 }
 
 void Graph::addEdge(int i, int j){
+    if(arr[i].empty())
+        _size++;
+    if(arr[j].empty())
+        _size++;
+    if(_size >= capacity){
+        resize(capacity*2);
+    }
     arr[i].push_back(j);
     arr[j].push_back(i);
 }
@@ -56,6 +77,12 @@ void Graph::addEdge(int i, int j){
 void Graph::removeEdge(int i, int j){
     int k = arr[i].remove(j);
     k = arr[j].remove(i);
+    if(arr[i].empty())
+        _size--;
+    if(arr[j].empty())
+        _size--;
+    if(_size <= capacity/4)
+        resize(capacity/2);
 }
 
 bool Graph::hasEdge(int i, int j){
@@ -63,12 +90,7 @@ bool Graph::hasEdge(int i, int j){
 }
 
 int Graph::size() const {
-    int counter;
-    for(int i = 0 ; i < capacity; ++i){
-        if(!arr[i].empty())
-            counter++;
-    }
-    return counter;
+    return _size;
 }
 
 Set<int> Graph::inConnections(int i) const { //wszystkie wierzchołki od których wychodzą krawędzie do i
