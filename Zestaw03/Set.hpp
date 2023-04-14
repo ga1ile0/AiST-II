@@ -35,9 +35,13 @@ class Set {
             capacity = newCapacity;
             
         }
+
+        
         
 
     public:
+
+       
 
         //constructors and destructor
         Set(){

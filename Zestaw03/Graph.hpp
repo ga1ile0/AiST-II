@@ -2,6 +2,7 @@
 #define GRAPH_HPP
 #include "Set.hpp"
 #include "LinkedList.hpp"
+#include "LinkedQueue.hpp"
 #include <queue>
 
 #define DEF_CAP 100
@@ -58,10 +59,7 @@ void Graph::removeEdge(int i, int j){
 }
 
 bool Graph::hasEdge(int i, int j){
-    if(arr[i].find(j) == -1)
-        return false;
-    else
-        return true;
+    return (arr[i].find(j) != -1);
 }
 
 int Graph::size() const {
@@ -112,7 +110,8 @@ Set<int> Graph::allConnections(int i) const { //suma dwóch poprzednich;
 
 int* Graph::BFS(const Graph& g, int s){
     int gSize = g.size();
-    std::queue<int> q;
+    //std::queue<int> q;
+    LinkedQueue q;
     bool* visited = new bool[gSize];
     int* paths = new int[gSize];
 
@@ -127,7 +126,7 @@ int* Graph::BFS(const Graph& g, int s){
     q.push(s);
 
     while(!q.empty()){
-        int frontEl = q.front();
+        int frontEl = q.frontEl();
         q.pop();
         Set<int> adj = g.outConnections(frontEl);
 

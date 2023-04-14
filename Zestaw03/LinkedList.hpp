@@ -28,6 +28,13 @@ class LinkedList{
         int remove(T x);
         bool replace(T x, T y);
 
+        LinkedList<T>& operator++(){
+            if(guard->next != nullptr){
+                guard->next = guard->next->next;
+            }
+            return *this;
+        }
+
         struct Iterator{
             Iterator(Node* ptr) : current(ptr) {}
             Node& operator*() const {return *current;}
